@@ -27,7 +27,7 @@ APPROVAL_TIERS = [
 ]
 
 REQUIRED_FIELDS = [
-    "item_description", "quantity", "unit_price", "currency",
+    "item_description", "quantity", "unit_of_measure", "unit_price", "currency",
     "supplier_name", "quote_reference", "delivery_date",
     "cost_center", "gl_account", "total_price",
     "business_justification", "requesting_department",

@@ -13,9 +13,9 @@ from langchain_core.tools import tool
 
 logger = logging.getLogger(__name__)
 
-# Procurement channel thresholds (USD)
-CATALOG_THRESHOLD = 1000.0
-SPOT_BUY_THRESHOLD = 25000.0
+# Procurement channel thresholds in EUR (VWS-PROC-002 §6)
+CATALOG_THRESHOLD = 5_000.0   # pre-approved catalogue items under €5,000
+SPOT_BUY_THRESHOLD = 49_999.0  # standard spot buy up to Tier 2 ceiling
 
 # Material group prefixes mapped to strategic categories
 STRATEGIC_CATEGORIES = {"SVC", "CONS"}
@@ -31,22 +31,22 @@ def _determine_channel(total_price: float, material_group: str, is_catalog_item:
     if is_catalog_item and total_price <= CATALOG_THRESHOLD:
         return (
             "catalog",
-            f"Item available in catalog and total spend ({total_price:.2f}) ≤ USD {CATALOG_THRESHOLD:,.0f} catalog threshold → Catalog Purchase eligible",
-            "PR Policy §4.1 – Procurement Channel Selection"
+            f"Item available in catalog and total spend ({total_price:.2f}) ≤ EUR {CATALOG_THRESHOLD:,.0f} catalog threshold → Ariba Catalogue eligible",
+            "VWS-PROC-002 §6 – Procurement Channels"
         )
     elif not is_strategic and total_price <= SPOT_BUY_THRESHOLD:
         return (
             "spot_buy",
-            f"Approved supplier confirmed and total spend ({total_price:.2f}) ≤ USD {SPOT_BUY_THRESHOLD:,.0f} spot-buy threshold → Spot Buy eligible",
-            "PR Policy §4.1 – Procurement Channel Selection"
+            f"Approved supplier confirmed and total spend ({total_price:.2f}) ≤ EUR {SPOT_BUY_THRESHOLD:,.0f} → SAP Ariba Guided Buying (Spot Buy)",
+            "VWS-PROC-002 §6 – Procurement Channels"
         )
     else:
-        reason = (f"Total spend ({total_price:.2f}) > USD {SPOT_BUY_THRESHOLD:,.0f} contract threshold"
+        reason = (f"Total spend ({total_price:.2f}) > EUR {SPOT_BUY_THRESHOLD:,.0f} — requires Finance Director or CPO approval"
                   if not is_strategic else f"Material group '{material_group}' is a strategic/services category")
         return (
             "contract",
-            f"{reason} → Contract Purchase required",
-            "PR Policy §4.1 – Procurement Channel Selection"
+            f"{reason} → SAP Ariba Guided Buying (Contract Purchase required)",
+            "VWS-PROC-002 §6 – Procurement Channels"
         )
 
 
@@ -75,15 +75,7 @@ def assemble_pr_draft(
         JSON string with pr_draft, channel_recommendation, policy_justification,
         decision_trace, human_readable_summary, and awaiting_confirmation=true.
     """
-    from load_skill_resources import load
-
     logger.info("Assembling final PR draft")
-
-    # Load the PR draft skill
-    try:
-        load("skills/pr-draft/SKILL.md")
-    except Exception:
-        pass
 
     try:
         fields: dict[str, Any] = json.loads(validated_fields) if isinstance(validated_fields, str) else validated_fields

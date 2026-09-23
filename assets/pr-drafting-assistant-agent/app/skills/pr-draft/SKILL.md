@@ -35,16 +35,16 @@ Based on the `material_group` and `total_price`, recommend one of three procurem
 | Approved supplier AND total_price ≤ spot-buy threshold | **Spot Buy** | Direct purchase from approved supplier |
 | total_price > contract threshold OR strategic category | **Contract Purchase** | Must reference an existing contract; escalate if none exists |
 
-Thresholds (USD equivalent):
-- Catalog threshold: USD 1,000
-- Spot-buy threshold: USD 25,000
-- Contract threshold: USD 25,000
+Thresholds in EUR (VWS-PROC-002 §6):
+- Catalogue threshold: €5,000 (pre-approved catalogue items only, Ariba Catalogue self-service)
+- Spot Buy / Guided Buying threshold: up to €49,999 (Tier 2 ceiling — Line Manager approval)
+- Contract Purchase required: €50,000 and above (Finance Director or CPO approval depending on tier)
 
 ## Step 3: Build Policy Justification
 
 For each recommendation, provide:
-- The rule that was applied (e.g., "Spend < USD 25,000 with approved supplier → Spot Buy eligible")
-- The policy reference (e.g., "PR Policy §4.1 – Procurement Channel Selection")
+- The rule that was applied (e.g., "Spend €19,000 < €49,999 with approved supplier → SAP Ariba Guided Buying eligible")
+- The policy reference (e.g., "VWS-PROC-002 §6 – Procurement Channels")
 - The supplier's qualification status
 
 ## Step 4: Build Decision Trace

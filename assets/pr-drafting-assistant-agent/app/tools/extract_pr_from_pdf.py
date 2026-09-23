@@ -25,14 +25,15 @@ def extract_pr_from_pdf(pdf_content: str, filename: str = "quotation.pdf") -> st
         JSON string with extracted fields and a list of missing/unextractable fields.
         Fields that cannot be extracted are set to null — never invented or defaulted.
     """
-    from load_skill_resources import load
+    from pathlib import Path
     from langchain_litellm import ChatLiteLLM
     from langchain_core.messages import HumanMessage, SystemMessage
 
     logger.info("[M1]: Starting PDF extraction for file: %s", filename)
 
-    # Load the extraction skill instructions
-    skill_content = load("skills/pr-extraction/SKILL.md")
+    # Load the extraction skill instructions directly from disk
+    _skill_path = Path(__file__).parent.parent / "skills" / "pr-extraction" / "SKILL.md"
+    skill_content = _skill_path.read_text(encoding="utf-8")
 
     # Decode base64 if needed; otherwise treat as plain text
     try:

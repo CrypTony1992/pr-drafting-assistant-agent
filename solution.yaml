@@ -1,0 +1,14 @@
+apiVersion: solution.sap/v1
+kind: Solution
+
+metadata:
+  name: pr-drafting-assistant-7c9ed
+  version: "1.0.0"
+  description: >
+    AI-powered Purchase Requisition Drafting Assistant that extracts PR fields
+    from supplier quotation PDFs, validates procurement policy, drafts compliant
+    PRs, and routes exceptions to procurement managers for SAP Ariba and S/4HANA.
+
+assets:
+  - ref: ./assets/pr-drafting-assistant-agent/asset.yaml
+  - ref: ./assets/sap-s4-purchase-requisition-mcp-server/asset.yaml

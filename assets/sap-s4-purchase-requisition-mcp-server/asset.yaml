@@ -1,0 +1,20 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: mcp-server
+
+metadata:
+  name: sap-s4-purchase-requisition-mcp-server
+  version: "1.0.0"
+  translation: mcp-translation/translation.json
+  apiSpec: mcp-translation/api-spec.edmx
+
+requires:
+  - name: API_PURCHASEREQ_PROCESS_SRV
+    kind: api
+    ordId: sap.s4:apiResource:API_PURCHASEREQ_PROCESS_SRV:v1
+
+provides:
+  apis:
+    - name: sap-s4-purchase-requisition-mcp-server
+      kind: mcp-server
+      ordId: customer.build:apiResource:pr-drafting-assistant-7c9ed.sap-s4-purchase-requisition-mcp-server:v1

@@ -1,0 +1,325 @@
+{
+  "servers": {
+    "sap-s4-purchase-requisition": {
+      "mcp_server_name": "sap.mcp/api_purchasereq_process_srv",
+      "description": "MCP server for the SAP S/4HANA Purchase Requisition Process API (API_PURCHASEREQ_PROCESS_SRV).",
+      "tools": {
+        "create": {
+          "description": "Create a new instance of the A_PurchaseRequisitionHeader EntitySet in the api_purchasereq_process_srv service.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "purchaserequisition": {"type": "string", "description": "Purchase Requisition number (auto-assigned)"},
+              "purchaserequisitiontype": {"type": "string", "description": "PR Type (e.g. NB for standard PR)"},
+              "purreqndescription": {"type": "string", "description": "PR description (max 40 chars)"},
+              "sourcedetermination": {"type": "boolean", "description": "Source determination flag"},
+              "purreqndoonlyvalidation": {"type": "boolean", "description": "Validation-only mode"},
+              "to_purchasereqnitem": {"type": "object", "description": "Nested PR line items"}
+            },
+            "required": []
+          },
+          "mock_response": {
+            "d": {
+              "PurchaseRequisition": "PR-2025-00145",
+              "PurchaseRequisitionType": "NB",
+              "PurReqnDescription": "Office supplies PR",
+              "SourceDetermination": false,
+              "PurReqnDoOnlyValidation": false
+            }
+          }
+        },
+        "create_error": {
+          "description": "Mock error response for failed PR creation (used in failure path tests).",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "force_error": {"type": "boolean", "description": "Set to true to simulate error"}
+            }
+          },
+          "mock_response": {
+            "error": {
+              "code": "PR_VALIDATION_ERROR",
+              "message": {
+                "lang": "en",
+                "value": "Purchase Requisition could not be created: Required field MaterialGroup is missing."
+              }
+            }
+          }
+        },
+        "list_a_purchaserequisitionheader_for_api_purchasereq_process_srv": {
+          "description": "Retrieve a list of purchase requisition headers.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "filter": {"type": "string", "description": "OData $filter expression"},
+              "select": {"type": "string", "description": "OData $select fields"},
+              "orderby": {"type": "string", "description": "OData $orderby"},
+              "top": {"type": "string", "description": "Max records to return (default 100)"},
+              "skip": {"type": "string", "description": "Records to skip"},
+              "expand": {"type": "string", "description": "Navigation properties to expand"},
+              "inlinecount": {"type": "string", "description": "Include count in response"}
+            },
+            "required": []
+          },
+          "mock_response": {
+            "results": [
+              {
+                "PurchaseRequisition": "PR-2025-00145",
+                "PurchaseRequisitionType": "NB",
+                "PurReqnDescription": "Office supplies PR"
+              },
+              {
+                "PurchaseRequisition": "PR-2025-00146",
+                "PurchaseRequisitionType": "NB",
+                "PurReqnDescription": "IT Equipment PR"
+              }
+            ]
+          }
+        },
+        "get_a_purchaserequisitionheader_for_api_purchasereq_process_srv": {
+          "description": "Retrieve a single purchase requisition header by key.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "purchaserequisition": {"type": "string", "description": "Purchase Requisition number"},
+              "select": {"type": "string", "description": "Fields to return"},
+              "expand": {"type": "string", "description": "Navigation properties to expand"}
+            },
+            "required": ["purchaserequisition"]
+          },
+          "mock_response": {
+            "d": {
+              "PurchaseRequisition": "PR-2025-00145",
+              "PurchaseRequisitionType": "NB",
+              "PurReqnDescription": "Office supplies PR",
+              "SourceDetermination": false
+            }
+          }
+        },
+        "create_a_purchaserequisitionitem_for_api_purchasereq_process_srv": {
+          "description": "Create a new PR line item.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "purchaserequisition": {"type": "string"},
+              "purchaserequisitionitem": {"type": "string"},
+              "purchaserequisitionitemtext": {"type": "string"},
+              "materialgroup": {"type": "string"},
+              "requestedquantity": {"type": "string"},
+              "baseunit": {"type": "string"},
+              "purchaserequisitionprice": {"type": "string"},
+              "purreqnitemcurrency": {"type": "string"},
+              "deliverydate": {"type": "string"},
+              "purchasingorganization": {"type": "string"},
+              "purchasinggroup": {"type": "string"},
+              "supplier": {"type": "string"},
+              "requisitionername": {"type": "string"}
+            },
+            "required": ["purchaserequisition"]
+          },
+          "mock_response": {
+            "d": {
+              "PurchaseRequisition": "PR-2025-00145",
+              "PurchaseRequisitionItem": "00010",
+              "PurchaseRequisitionItemText": "HP LaserJet Pro 400 Printer",
+              "MaterialGroup": "OFF-EQP",
+              "RequestedQuantity": "5.000",
+              "BaseUnit": "EA",
+              "PurchaseRequisitionPrice": "249.99",
+              "PurReqnItemCurrency": "USD",
+              "DeliveryDate": "/Date(1748649600000)/",
+              "PurchasingOrganization": "1000",
+              "PurchasingGroup": "PG001",
+              "Supplier": "VENDOR-OFFICESOL",
+              "ItemNetAmount": "1249.95"
+            }
+          }
+        },
+        "create_a_purreqnacctassgmt_for_api_purchasereq_process_srv": {
+          "description": "Create account assignment for a PR line item.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "purchaserequisition": {"type": "string"},
+              "purchaserequisitionitem": {"type": "string"},
+              "purchasereqnacctassgmtnumber": {"type": "string"},
+              "costcenter": {"type": "string"},
+              "glaccount": {"type": "string"}
+            },
+            "required": ["purchaserequisition", "purchaserequisitionitem"]
+          },
+          "mock_response": {
+            "d": {
+              "PurchaseRequisition": "PR-2025-00145",
+              "PurchaseRequisitionItem": "00010",
+              "PurchaseReqnAcctAssgmtNumber": "01",
+              "CostCenter": "CC-1000",
+              "GLAccount": "400000"
+            }
+          }
+        },
+        "function_validate_for_api_purchasereq_process_srv": {
+          "description": "Validate a purchase requisition before submission.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "purchaserequisition": {"type": "string", "description": "PR number to validate"}
+            },
+            "required": ["purchaserequisition"]
+          },
+          "mock_response": {
+            "results": [
+              {
+                "MessageType": "S",
+                "MessageText": "Purchase Requisition PR-2025-00145 is valid and ready for submission."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "ariba-supplier": {
+      "mcp_server_name": "sap.aribas4/supplierdatapagination",
+      "description": "SAP Ariba Supplier Data Pagination API for approved supplier validation.",
+      "tools": {
+        "getVendors_approved": {
+          "description": "Mock: Approved supplier found in Ariba supplier list.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "vendorName": {"type": "string", "description": "Supplier name to search"},
+              "erpVendorId": {"type": "string", "description": "ERP vendor ID"},
+              "top": {"type": "integer", "description": "Max results (default 100)"}
+            }
+          },
+          "mock_response": {
+            "results": [
+              {
+                "vendorId": "VENDOR-OFFICESOL",
+                "vendorName": "Acme Office Solutions Ltd.",
+                "vendorStatus": "Active",
+                "qualificationStatus": "Qualified",
+                "erpVendorId": "V-100045",
+                "countryOfOrigin": "US",
+                "createdDate": "/Date(1672531200000)/"
+              }
+            ]
+          }
+        },
+        "getVendors_unapproved": {
+          "description": "Mock: Unapproved supplier — not in Ariba approved supplier list.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "vendorName": {"type": "string", "description": "Supplier name to search"}
+            }
+          },
+          "mock_response": {
+            "results": []
+          }
+        }
+      }
+    },
+    "ariba-master-data": {
+      "mcp_server_name": "sap.aribabuyer/mds_search",
+      "description": "SAP Ariba Master Data Search API for cost centers, GL accounts, material groups.",
+      "tools": {
+        "search_cost_center": {
+          "description": "Look up cost center master data.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "entity": {"type": "string", "description": "Entity type (CostCenter)"},
+              "filter": {"type": "string", "description": "Filter value"},
+              "top": {"type": "integer", "description": "Max results"}
+            }
+          },
+          "mock_response": {
+            "records": [
+              {
+                "id": "CC-1000",
+                "name": "Corporate IT",
+                "description": "Corporate Information Technology cost center",
+                "companyCode": "1000",
+                "validFrom": "2020-01-01",
+                "validTo": "9999-12-31",
+                "active": true
+              }
+            ]
+          }
+        },
+        "search_gl_account": {
+          "description": "Look up GL account master data.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "entity": {"type": "string", "description": "Entity type (GLAccount)"},
+              "filter": {"type": "string", "description": "Filter value"},
+              "top": {"type": "integer", "description": "Max results"}
+            }
+          },
+          "mock_response": {
+            "records": [
+              {
+                "id": "400000",
+                "name": "Office Supplies Expense",
+                "description": "General office supplies and consumables",
+                "accountType": "Expense",
+                "companyCode": "1000",
+                "active": true
+              }
+            ]
+          }
+        },
+        "search_material_group": {
+          "description": "Look up material group / commodity code master data.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "entity": {"type": "string", "description": "Entity type (CommodityCode)"},
+              "filter": {"type": "string", "description": "Filter value"},
+              "top": {"type": "integer", "description": "Max results"}
+            }
+          },
+          "mock_response": {
+            "records": [
+              {
+                "id": "OFF-EQP",
+                "name": "Office Equipment",
+                "description": "Office equipment including printers, scanners, copiers",
+                "purchasingGroup": "PG001",
+                "purchasingOrganization": "1000",
+                "active": true
+              }
+            ]
+          }
+        },
+        "search_master_data_empty": {
+          "description": "Mock: Master data lookup returning no results (for mismatch test scenarios).",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "entity": {"type": "string"},
+              "filter": {"type": "string"}
+            }
+          },
+          "mock_response": {
+            "records": []
+          }
+        }
+      }
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created_for_agent": "pr-drafting-assistant-agent",
+    "mock_mode": true,
+    "deterministic": true,
+    "total_servers": 3,
+    "total_tools": 13,
+    "generated_from": [
+      "assets/sap-s4-purchase-requisition-mcp-server/mcp-translation/translation.json"
+    ],
+    "generation_date": "2025-01-20"
+  }
+}

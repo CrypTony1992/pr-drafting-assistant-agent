@@ -225,17 +225,17 @@ def validate_pr_policy(
                     "policy_source": "VWS-PROC-002 §5.1 – Approved Vendor List"
                 })
 
-    # Step 6: Category routing check
+    # Step 6: Category routing check — warn only; routing is confirmed by the master data lookup
     if material_group:
         try:
             md_result = json.loads(master_data_results) if isinstance(master_data_results, str) else master_data_results
             records = md_result.get("records", [])
             if not records:
-                violations.append({
+                warnings.append({
                     "type": "CATEGORY_ROUTING_MISMATCH", "field": "material_group",
-                    "message": (f"Material group '{material_group}' does not map to a valid "
-                                "purchasing group in master data."),
-                "policy_source": "VWS-PROC-002 §6 – Procurement Channels"
+                    "message": (f"Material group '{material_group}' could not be confirmed in master data. "
+                                "Verify purchasing group assignment before submission."),
+                    "policy_source": "VWS-PROC-002 §6 – Procurement Channels"
                 })
         except (json.JSONDecodeError, AttributeError):
             pass

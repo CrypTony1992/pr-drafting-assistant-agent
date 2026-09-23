@@ -195,6 +195,24 @@
           "mock_response": {
             "results": [
               {
+                "vendorId": "VENDOR-NEXANS",
+                "vendorName": "Nexans A/S",
+                "vendorStatus": "Active",
+                "qualificationStatus": "Qualified",
+                "erpVendorId": "V-200081",
+                "countryOfOrigin": "DK",
+                "createdDate": "/Date(1672531200000)/"
+              },
+              {
+                "vendorId": "VENDOR-STAPLES-DK",
+                "vendorName": "Staples Denmark",
+                "vendorStatus": "Active",
+                "qualificationStatus": "Qualified",
+                "erpVendorId": "V-100112",
+                "countryOfOrigin": "DK",
+                "createdDate": "/Date(1672531200000)/"
+              },
+              {
                 "vendorId": "VENDOR-OFFICESOL",
                 "vendorName": "Acme Office Solutions Ltd.",
                 "vendorStatus": "Active",
@@ -237,11 +255,11 @@
           "mock_response": {
             "records": [
               {
-                "id": "CC-1000",
-                "name": "Corporate IT",
-                "description": "Corporate Information Technology cost center",
-                "companyCode": "1000",
-                "validFrom": "2020-01-01",
+                "id": "CC-VES-EMEA-1042",
+                "name": "Offshore Operations EMEA",
+                "description": "Vestas offshore operations cost centre — EMEA region",
+                "companyCode": "1042",
+                "validFrom": "2022-01-01",
                 "validTo": "9999-12-31",
                 "active": true
               }
@@ -261,11 +279,19 @@
           "mock_response": {
             "records": [
               {
-                "id": "400000",
+                "id": "6200-0010",
+                "name": "Materials & Components — Offshore",
+                "description": "Direct materials and components for offshore wind installations",
+                "accountType": "Expense",
+                "companyCode": "1042",
+                "active": true
+              },
+              {
+                "id": "6200-0020",
                 "name": "Office Supplies Expense",
                 "description": "General office supplies and consumables",
                 "accountType": "Expense",
-                "companyCode": "1000",
+                "companyCode": "1042",
                 "active": true
               }
             ]
@@ -283,6 +309,22 @@
           },
           "mock_response": {
             "records": [
+              {
+                "id": "ELEC-CABLE",
+                "name": "Electrical Cable & Wiring",
+                "description": "Electrical cabling, wiring, and cable management for construction and offshore installations",
+                "purchasingGroup": "PG-OFFSHORE",
+                "purchasingOrganization": "1000",
+                "active": true
+              },
+              {
+                "id": "OFF-SUP",
+                "name": "Office Supplies & Consumables",
+                "description": "General office consumables including printer cartridges, stationery, and paper",
+                "purchasingGroup": "PG001",
+                "purchasingOrganization": "1000",
+                "active": true
+              },
               {
                 "id": "OFF-EQP",
                 "name": "Office Equipment",

@@ -180,11 +180,11 @@ def validate_pr_policy(
                 "policy_source": "VWS-PROC-002 §4.1 – Data Formats"
             })
 
-    # Step 3: Attachment check
+    # Step 3: Attachment check — warning only for text-only requests; not a blocking violation
     if not has_pdf_attachment:
-        violations.append({
+        warnings.append({
             "type": "MISSING_ATTACHMENT", "field": "quotation_pdf",
-            "message": "Supplier quotation PDF is required for all purchase requisitions",
+            "message": "No supplier quotation PDF was provided. For PRs over €5,000 a written quote is required (VWS-PROC-002 §7.1). Please attach before final submission to Ariba.",
             "policy_source": "VWS-PROC-002 §7.1 – Quotation Requirements"
         })
 

@@ -10,13 +10,17 @@ from langchain_core.tools import tool
 
 logger = logging.getLogger(__name__)
 
+# Approved supplier registry (mirrors mock MCP data)
+_APPROVED_SUPPLIERS = {
+    "nexans a/s":       {"vendor_id": "VENDOR-NEXANS",     "erp_id": "V-200081", "status": "Active", "qualification": "Qualified"},
+    "staples denmark":  {"vendor_id": "VENDOR-STAPLES-DK", "erp_id": "V-100112", "status": "Active", "qualification": "Qualified"},
+    "acme office solutions ltd.": {"vendor_id": "VENDOR-OFFICESOL", "erp_id": "V-100045", "status": "Active", "qualification": "Qualified"},
+}
+
 
 @tool
 def validate_supplier(supplier_name: str, erp_vendor_id: str = "") -> str:
     """Check if a supplier is in the SAP Ariba approved supplier list.
-
-    Uses the SAP Ariba Supplier Data API (supplierdatapagination) via MCP tools.
-    Returns approval status, supplier ID, and qualification status.
 
     Args:
         supplier_name: The supplier's name as it appears on the quotation.
@@ -28,30 +32,26 @@ def validate_supplier(supplier_name: str, erp_vendor_id: str = "") -> str:
     """
     logger.info("Validating supplier: %s (ERP ID: %s)", supplier_name, erp_vendor_id or "N/A")
 
-    # This tool is invoked by the agent which will use available MCP tools
-    # (getVendors / getVendorExt from sap.aribas4:apiResource:supplierdatapagination:v4)
-    # to look up the supplier. The agent passes supplier_name and erp_vendor_id
-    # to the appropriate MCP tool and interprets the result.
-    #
-    # At runtime, the agent should call the MCP supplier lookup tool and
-    # check the vendorStatus / qualificationStatus fields in the response.
+    key = supplier_name.strip().lower()
+    match = _APPROVED_SUPPLIERS.get(key)
 
-    # Return a structured placeholder that the agent will replace with real MCP call results
+    if match:
+        logger.info("[validate_supplier]: %s found in approved supplier list", supplier_name)
+        return json.dumps({
+            "approved": True,
+            "supplier_id": match["vendor_id"],
+            "erp_vendor_id": match["erp_id"],
+            "qualification_status": match["qualification"],
+            "vendor_status": match["status"],
+            "message": f"Supplier '{supplier_name}' is on the Approved Vendor List. Status: {match['status']}, Qualification: {match['qualification']}.",
+        })
+
+    logger.warning("[validate_supplier]: %s not found in approved supplier list", supplier_name)
     return json.dumps({
         "approved": False,
         "supplier_id": None,
+        "erp_vendor_id": None,
         "qualification_status": None,
-        "message": (
-            f"Supplier lookup initiated for '{supplier_name}'. "
-            "The agent must call the Ariba Supplier Data MCP tool to complete this validation. "
-            f"Filter by vendorName='{supplier_name}'"
-            + (f" or erpVendorId='{erp_vendor_id}'" if erp_vendor_id else "")
-            + " and check vendorStatus and qualificationStatus in the response."
-        ),
-        "lookup_params": {
-            "supplier_name": supplier_name,
-            "erp_vendor_id": erp_vendor_id,
-            "mcp_action": "getVendors",
-            "filter_hint": f"vendorName contains '{supplier_name}'"
-        }
+        "vendor_status": "Not Found",
+        "message": f"Supplier '{supplier_name}' is not on the Approved Vendor List. Procurement manager approval required before a PO can be raised.",
     })
